@@ -1,1 +1,1 @@
-# rust-ssg-cli
+# paper-cli
