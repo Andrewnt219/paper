@@ -12,10 +12,11 @@ impl Config {
             .about("Generate static site")
             .arg(
                 Arg::new("input")
+                    .multiple_values(true)
                     .short('i')
                     .long("input")
                     .value_name("FILE")
-                    .about("Path to the file"),
+                    .about("Path to file(s)"),
             )
             .get_matches();
 
