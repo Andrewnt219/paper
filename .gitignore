@@ -1,2 +1,4 @@
 /target
-test.txt
+test*.txt
+.vscode
+dist
