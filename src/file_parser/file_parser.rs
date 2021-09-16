@@ -70,16 +70,4 @@ impl SourceFile {
     pub fn file_name(&self) -> &str {
         self.file_name.as_str()
     }
-
-    pub fn write_to_html(&self) -> Result<(), io::Error> {
-        let dest_path = Path::new("dist").join(format!("{}.html", self.file_stem));
-
-        let mut template = Template::new();
-        template.parse(self.content());
-
-        File::create(&dest_path)
-            .and_then(|mut file| file.write_all(template.content().as_bytes()))?;
-
-        Ok(())
-    }
 }
