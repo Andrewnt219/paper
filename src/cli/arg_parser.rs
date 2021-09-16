@@ -1,22 +1,12 @@
-use std::{
-    fs::{create_dir_all, File},
-    io::Write,
-    path::Path,
-    process,
-};
-
 use clap::{App, Arg, ArgMatches};
 
-use crate::file_parser::{file_parser::SourceFile, template_file::Template};
-
-pub struct Config {
-    matches: ArgMatches,
+pub struct ArgParser {
     dist_dir: String,
     file_paths: Vec<String>,
 }
 
-impl Config {
-    pub fn new() -> Config {
+impl ArgParser {
+    pub fn new() -> ArgParser {
         let matches = App::new("Paper")
             .version("0.1")
             .author("Andrew N. <hey@andrewnt.dev>")
@@ -36,43 +26,29 @@ impl Config {
                     .value_name("FILE")
                     .about("Path to file"),
             )
+            .arg(
+                Arg::new("stylesheet")
+                    .short('s')
+                    .long("stylesheet")
+                    .value_name("URL")
+                    .about("Link to stylesheet"),
+            )
             .get_matches();
 
-        Config {
+        ArgParser {
             dist_dir: get_output_dir(&matches),
             file_paths: get_input_files(&matches),
-            matches,
         }
     }
 
-    fn write_to_html(&self) {
-        for file_path in &self.file_paths {
-            let file = SourceFile::new(&file_path).unwrap_or_else(|err| {
-                println!("Problem parsing '{}': {}", &file_path, err);
-                process::exit(1);
-            });
-
-            let dest_path = Path::new(&self.dist_dir).join(format!("{}.html", file.file_stem()));
-
-            let mut template = Template::new();
-            template.parse(file.content());
-
-            File::create(&dest_path)
-                .and_then(|mut file| file.write_all(template.content().as_bytes()))
-                .unwrap_or_else(|error| {
-                    println!("Problem generating '{}': {}", &file_path, error);
-                    process::exit(1);
-                });
-        }
+    /// Get a reference to the arg parser's dist dir.
+    pub fn dist_dir(&self) -> &str {
+        self.dist_dir.as_str()
     }
 
-    pub fn run(&self) {
-        create_dir_all(&self.dist_dir).unwrap_or_else(|error| {
-            println!("Failed to create dist: {}", error);
-            process::exit(1);
-        });
-
-        self.write_to_html();
+    /// Get a reference to the arg parser's file paths.
+    pub fn file_paths(&self) -> Vec<String> {
+        self.file_paths.clone()
     }
 }
 

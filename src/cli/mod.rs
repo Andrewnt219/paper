@@ -1,1 +1,2 @@
-pub mod config;
+pub mod arg_parser;
+pub mod generator;
