@@ -33,7 +33,7 @@ impl Generator {
                 Path::new(&self.args.dist_dir()).join(format!("{}.html", file.file_stem()));
 
             let mut template = Template::new();
-            template.parse(file.content());
+            template.parse(file.content(), &self.args);
 
             File::create(&dest_path)
                 .and_then(|mut file| file.write_all(template.content().as_bytes()))

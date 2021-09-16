@@ -1,5 +1,7 @@
 use std::{fs::read_to_string, path::Path, process};
 
+use crate::cli::arg_parser::ArgParser;
+
 pub struct Template {
     content: String,
 }
@@ -18,6 +20,10 @@ impl Template {
         self.content = self.content.replace("$TITLE", title);
     }
 
+    fn set_styleshet(&mut self, url: &str) {
+        self.content = self.content.replace("$STYLESHEET_URL", url);
+    }
+
     fn set_body(&mut self, body: &str) {
         self.content = self.content.replace("$BODY", body);
     }
@@ -26,7 +32,7 @@ impl Template {
         self.content.as_str()
     }
 
-    pub fn parse(&mut self, content: &str) {
+    pub fn parse(&mut self, content: &str, args: &ArgParser) {
         let mut body = String::from("");
         let mut title = String::from("");
         let mut blank_line_count = 0;
@@ -53,6 +59,7 @@ impl Template {
 
         self.set_title(&title);
         self.set_body(&body);
+        self.set_styleshet(args.stylesheet());
     }
 }
 
