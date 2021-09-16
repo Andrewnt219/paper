@@ -1,9 +1,11 @@
 use std::{
     ffi::OsStr,
-    fs::{self, write, File},
+    fs::{self, File},
     io::{self, ErrorKind, Write},
     path::Path,
 };
+
+use super::template_file::Template;
 
 pub struct SourceFile {
     content: String,
@@ -72,13 +74,11 @@ impl SourceFile {
     pub fn write_to_html(&self) -> Result<(), io::Error> {
         let dest_path = Path::new("dist").join(format!("{}.html", self.file_stem));
 
-        let mut content = String::from("");
+        let mut template = Template::new();
+        template.parse(self.content());
 
-        for line in self.content.lines() {
-            content += format!("<p>{}</p>", line).as_str();
-        }
-
-        File::create(&dest_path).and_then(|mut file| file.write_all(content.as_bytes()))?;
+        File::create(&dest_path)
+            .and_then(|mut file| file.write_all(template.content().as_bytes()))?;
 
         Ok(())
     }
