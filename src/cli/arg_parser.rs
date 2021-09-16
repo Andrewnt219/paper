@@ -1,5 +1,6 @@
 use clap::{App, Arg, ArgMatches};
 
+/// Represent the parsed arguments from CLI
 pub struct ArgParser {
     dist_dir: String,
     stylesheet: String,
@@ -7,6 +8,7 @@ pub struct ArgParser {
 }
 
 impl ArgParser {
+    /// Create a new `ArgParser` with parsed CLI arguments
     pub fn new() -> ArgParser {
         let matches = App::new("Paper")
             .version("0.1")
@@ -25,7 +27,7 @@ impl ArgParser {
                     .short('o')
                     .long("output")
                     .value_name("FILE")
-                    .about("Path to file"),
+                    .about("Path to output file"),
             )
             .arg(
                 Arg::new("stylesheet")
@@ -59,6 +61,7 @@ impl ArgParser {
     }
 }
 
+/// Get the output dir from CLI arg
 fn get_output_dir(matches: &ArgMatches) -> String {
     let mut dir = "dist";
     if let Some(path) = matches.value_of("output") {
@@ -68,6 +71,7 @@ fn get_output_dir(matches: &ArgMatches) -> String {
     dir.to_string()
 }
 
+/// Get the input file(s) from CLI arg
 fn get_input_files(matches: &ArgMatches) -> Vec<String> {
     let mut input_files = vec![];
 
@@ -78,6 +82,7 @@ fn get_input_files(matches: &ArgMatches) -> Vec<String> {
     input_files
 }
 
+/// Get the stylesheet's URL from CLI arg
 fn get_stylesheet(matches: &ArgMatches) -> String {
     let mut url = "style.css";
     if let Some(value) = matches.value_of("stylesheet") {
