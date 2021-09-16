@@ -2,7 +2,7 @@ use std::{
     ffi::OsStr,
     fs::{self, File},
     io::ErrorKind,
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 /// Represents the parsed source file
@@ -15,10 +15,8 @@ pub struct SourceFile {
 
 impl SourceFile {
     /// Create a new `SourceFile` with parsed content and metadata
-    pub fn new(path_to_file: &str) -> Result<SourceFile, &str> {
-        let path = Path::new(path_to_file);
-
-        let content = match fs::read_to_string(path) {
+    pub fn new(file_path: &PathBuf) -> Result<SourceFile, &str> {
+        let content = match fs::read_to_string(file_path) {
             Ok(string) => string,
             Err(error) => match error.kind() {
                 ErrorKind::NotFound => return Err("File does not exist"),
@@ -26,9 +24,9 @@ impl SourceFile {
             },
         };
 
-        let file_stem = parse_os_str_to_string(path.file_stem());
-        let ext = parse_os_str_to_string(path.extension());
-        let file_name = parse_os_str_to_string(path.file_name());
+        let file_stem = parse_os_str_to_string(file_path.file_stem());
+        let ext = parse_os_str_to_string(file_path.extension());
+        let file_name = parse_os_str_to_string(file_path.file_name());
 
         Ok(SourceFile {
             content,
