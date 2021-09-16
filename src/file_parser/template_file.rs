@@ -27,16 +27,35 @@ impl Template {
     }
 
     pub fn parse(&mut self, content: &str) {
-        self.parse_body(content);
-    }
+        let mut body = String::from("");
+        let mut title = String::from("");
+        let mut blank_line_count = 0;
 
-    fn parse_body(&mut self, body: &str) {
-        let mut result = String::from("");
-
-        for line in body.lines() {
-            result += format!("<p>{}</p>", line).as_str();
+        for (index, line) in content.trim().lines().enumerate() {
+            match line {
+                "" if index <= 2 => blank_line_count += 1,
+                s => {
+                    if index == 0 {
+                        title += s;
+                    } else {
+                        body += parse_body(s).as_str();
+                    }
+                }
+            }
         }
 
-        self.set_body(body);
+        if blank_line_count == 2 {
+            body = format!("<h1>{}</h1>{}", title, body);
+        } else {
+            body = parse_body(&title) + &body;
+            title.clear();
+        }
+
+        self.set_title(&title);
+        self.set_body(&body);
     }
+}
+
+fn parse_body(content: &str) -> String {
+    format!("<p>{}</p>", content)
 }
