@@ -1,11 +1,4 @@
-use std::{
-    ffi::OsStr,
-    fs::{self, File},
-    io::{self, ErrorKind, Write},
-    path::Path,
-};
-
-use super::template_file::Template;
+use std::{ffi::OsStr, fs, io::ErrorKind, path::Path};
 
 pub struct SourceFile {
     content: String,

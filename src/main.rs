@@ -1,10 +1,10 @@
 mod cli;
 mod file_parser;
 
-use cli::config::Config;
+use cli::generator::Generator;
 
 fn main() {
-    let config = Config::new();
+    let generator = Generator::new();
 
-    config.run();
+    generator.run();
 }
