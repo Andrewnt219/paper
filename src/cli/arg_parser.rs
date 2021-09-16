@@ -2,6 +2,7 @@ use clap::{App, Arg, ArgMatches};
 
 pub struct ArgParser {
     dist_dir: String,
+    stylesheet: String,
     file_paths: Vec<String>,
 }
 
@@ -38,6 +39,7 @@ impl ArgParser {
         ArgParser {
             dist_dir: get_output_dir(&matches),
             file_paths: get_input_files(&matches),
+            stylesheet: get_stylesheet(&matches),
         }
     }
 
@@ -49,6 +51,11 @@ impl ArgParser {
     /// Get a reference to the arg parser's file paths.
     pub fn file_paths(&self) -> Vec<String> {
         self.file_paths.clone()
+    }
+
+    /// Get a reference to the arg parser's stylesheet.
+    pub fn stylesheet(&self) -> &str {
+        self.stylesheet.as_str()
     }
 }
 
@@ -69,4 +76,13 @@ fn get_input_files(matches: &ArgMatches) -> Vec<String> {
     }
 
     input_files
+}
+
+fn get_stylesheet(matches: &ArgMatches) -> String {
+    let mut url = "style.css";
+    if let Some(value) = matches.value_of("stylesheet") {
+        url = value;
+    }
+
+    url.to_string()
 }
