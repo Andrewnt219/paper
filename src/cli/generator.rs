@@ -5,9 +5,7 @@ use std::{
     process,
 };
 
-use clap::{App, Arg};
-
-use crate::file_parser::{file_parser::SourceFile, template_file::Template};
+use crate::file_parser::{source_file::SourceFile, template_file::Template};
 
 use super::arg_parser::ArgParser;
 
