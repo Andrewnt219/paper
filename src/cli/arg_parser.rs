@@ -1,10 +1,15 @@
+use std::{
+    path::{Path, PathBuf},
+    process,
+};
+
 use clap::{App, Arg, ArgMatches};
 
 /// Represent the parsed arguments from CLI
 pub struct ArgParser {
     dist_dir: String,
     stylesheet: String,
-    file_paths: Vec<String>,
+    input_paths: Vec<PathBuf>,
 }
 
 impl ArgParser {
@@ -40,7 +45,7 @@ impl ArgParser {
 
         ArgParser {
             dist_dir: get_output_dir(&matches),
-            file_paths: get_input_files(&matches),
+            input_paths: get_input_paths(&matches),
             stylesheet: get_stylesheet(&matches),
         }
     }
@@ -51,8 +56,8 @@ impl ArgParser {
     }
 
     /// Get a reference to the arg parser's file paths.
-    pub fn file_paths(&self) -> Vec<String> {
-        self.file_paths.clone()
+    pub fn input_paths(&self) -> Vec<PathBuf> {
+        self.input_paths.clone()
     }
 
     /// Get a reference to the arg parser's stylesheet.
@@ -63,28 +68,34 @@ impl ArgParser {
 
 /// Get the output dir from CLI arg
 fn get_output_dir(matches: &ArgMatches) -> String {
-    let mut dir = "dist";
+    let mut output_dir = Path::new("./dist");
     if let Some(path) = matches.value_of("output") {
-        dir = path;
+        output_dir = Path::new(path);
     }
 
-    dir.to_string()
+    output_dir
+        .to_str()
+        .unwrap_or_else(|| {
+            println!("Fail to parse path '{}'", output_dir.display());
+            process::exit(1);
+        })
+        .to_string()
 }
 
 /// Get the input file(s) from CLI arg
-fn get_input_files(matches: &ArgMatches) -> Vec<String> {
-    let mut input_files = vec![];
+fn get_input_paths(matches: &ArgMatches) -> Vec<PathBuf> {
+    let mut input_paths = vec![];
 
     if let Some(i) = matches.values_of("input") {
-        input_files = i.map(|value| value.to_string()).collect();
+        input_paths = i.map(|value| PathBuf::from(value)).collect();
     }
 
-    input_files
+    input_paths
 }
 
 /// Get the stylesheet's URL from CLI arg
 fn get_stylesheet(matches: &ArgMatches) -> String {
-    let mut url = "style.css";
+    let mut url = "./style.css";
     if let Some(value) = matches.value_of("stylesheet") {
         url = value;
     }
