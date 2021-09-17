@@ -62,6 +62,9 @@ impl Generator {
         if path.is_file() {
             self.generate_dist_from_file(&path);
         }
+
+        println!("Path is not regconize as file or dir. Try removing trailing slash");
+        process::exit(0);
     }
 
     /// Recursively gEnerate dist file from a dir path
