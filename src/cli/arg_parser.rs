@@ -89,7 +89,7 @@ fn get_input_paths(matches: &ArgMatches) -> Vec<PathBuf> {
 
 /// Get the stylesheet's URL from CLI arg
 fn get_stylesheet(matches: &ArgMatches) -> String {
-    let mut url = "./style.css";
+    let mut url = "asset/style.css";
     if let Some(value) = matches.value_of("stylesheet") {
         url = value;
     }
