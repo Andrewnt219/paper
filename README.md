@@ -32,6 +32,14 @@ OPTIONS:
 
 ## Implemented optional features
 
-- Parse title
-- Pass in output dir as argument
-- Pass in stylesheet's url as argument
+🎉 Generate `index.html`
+
+🎉 Bundle `style.css`
+
+🎉 Keep source folder structure
+
+🌟 Parse title
+
+🌟 Pass in output dir as argument
+
+🌟 Pass in stylesheet's url as argument
