@@ -38,7 +38,7 @@ impl ArgParser {
                 Arg::new("stylesheet")
                     .short('s')
                     .long("stylesheet")
-                    .value_name("URL")
+                    .value_name("URL or FILE")
                     .about("Link to stylesheet"),
             )
             .get_matches();
