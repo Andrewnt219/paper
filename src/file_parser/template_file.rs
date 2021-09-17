@@ -1,4 +1,8 @@
-use std::{fs::read_to_string, path::Path, process};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    process,
+};
 
 use crate::cli::arg_parser::ArgParser;
 
@@ -34,11 +38,7 @@ pub struct Template {
 impl Template {
     /// Create a template with raw content
     pub fn new() -> Template {
-        let content = read_to_string(Path::new("asset/template.html")).unwrap_or_else(|error| {
-            println!("Fail to read template file: {}", error);
-            process::exit(1);
-        });
-
+        let content = include_str!("./asset/template.html").to_string();
         return Template {
             content,
             state: TemplateState::RAW,
@@ -101,12 +101,32 @@ impl Template {
         // Update the raw content
         self.set_title(&title);
         self.set_body(&body);
-        self.set_styleshet(args.stylesheet());
+        self.set_styleshet(parse_stylesheet_url(args.stylesheet()).as_str());
         self.state = TemplateState::PARSED;
     }
 }
 
-// parse the content to suitable html tags
+/// parse the content to suitable html tags
 fn parse_body(content: &str) -> String {
     format!("<p>{}</p>", content)
+}
+
+/// Parse stylesheet url to <style> or <link>
+fn parse_stylesheet_url(url: &str) -> String {
+    let path = PathBuf::from(url);
+
+    if path.is_file() {
+        let content = fs::read_to_string(&path).unwrap_or_else(|error| {
+            println!(
+                "Fail to read content of stylesheet at '{}': {}",
+                path.display(),
+                error
+            );
+            process::exit(0);
+        });
+
+        format!("<style>{}</style>", content)
+    } else {
+        format!("<link rel='stylesheet' href='{}' />", url)
+    }
 }

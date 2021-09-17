@@ -27,7 +27,6 @@ impl Generator {
     pub fn run(&self) {
         self.create_dist_dir();
         self.generate_dist();
-        self.generate_stylesheet();
         self.generate_dist_index_file();
     }
 
@@ -136,38 +135,6 @@ impl Generator {
                 );
                 process::exit(1);
             });
-    }
-
-    fn generate_stylesheet(&self) {
-        let stylesheet_path = PathBuf::from(self.args.stylesheet());
-
-        if !stylesheet_path.is_file() {
-            return;
-        };
-
-        let dest_path = self.args.dist_dir().join(&stylesheet_path);
-        let dir_path = self
-            .args
-            .dist_dir()
-            .join(&stylesheet_path.parent().unwrap_or_else(|| {
-                println!("Fail to get parent file of '{}'", stylesheet_path.display());
-                process::exit(1);
-            }));
-
-        fs::create_dir_all(dir_path).unwrap_or_else(|error| {
-            println!("Fail to create dir for stylesheet: {}", error);
-            process::exit(1);
-        });
-
-        fs::copy(&stylesheet_path, &dest_path).unwrap_or_else(|error| {
-            println!(
-                "Fail to copy stylesheet from {} to {}: {}",
-                stylesheet_path.display(),
-                dest_path.display(),
-                error
-            );
-            process::exit(1);
-        });
     }
 
     /// Create the index.html file
