@@ -60,6 +60,11 @@ impl Generator {
             return;
         }
 
+        fs::create_dir_all(self.args.dist_dir().join(dir_path)).unwrap_or_else(|error| {
+            println!("Fail to generate dir from '{}'", error);
+            process::exit(1);
+        });
+
         if let Ok(paths) = fs::read_dir(dir_path) {
             for path in paths {
                 if let Ok(dir_entry) = path {
@@ -80,7 +85,14 @@ impl Generator {
             process::exit(1);
         });
 
-        let dest_path = Path::new(&self.args.dist_dir()).join(format!("{}.html", file.file_stem()));
+        let file_path_prefix = file_path.parent().unwrap_or_else(|| {
+            println!("Fail to get path prefix at '{}'", file_path.display());
+            process::exit(1);
+        });
+
+        let dest_path = Path::new(&self.args.dist_dir())
+            .join(file_path_prefix)
+            .join(format!("{}.html", file.file_stem()));
 
         let mut template = Template::new();
         template.parse(file.content(), &self.args);
@@ -88,7 +100,11 @@ impl Generator {
         File::create(&dest_path)
             .and_then(|mut file| file.write_all(template.content().as_bytes()))
             .unwrap_or_else(|error| {
-                println!("Problem generating '{}': {}", file_path.display(), error);
+                println!(
+                    "Problem generating file '{}': {}",
+                    file_path.display(),
+                    error
+                );
                 process::exit(1);
             });
     }
