@@ -7,7 +7,7 @@ use clap::{App, Arg, ArgMatches};
 
 /// Represent the parsed arguments from CLI
 pub struct ArgParser {
-    dist_dir: String,
+    dist_dir: PathBuf,
     stylesheet: String,
     input_paths: Vec<PathBuf>,
 }
@@ -51,8 +51,8 @@ impl ArgParser {
     }
 
     /// Get a reference to the arg parser's dist dir.
-    pub fn dist_dir(&self) -> &str {
-        self.dist_dir.as_str()
+    pub fn dist_dir(&self) -> &PathBuf {
+        &self.dist_dir
     }
 
     /// Get a reference to the arg parser's file paths.
@@ -67,19 +67,13 @@ impl ArgParser {
 }
 
 /// Get the output dir from CLI arg
-fn get_output_dir(matches: &ArgMatches) -> String {
-    let mut output_dir = Path::new("./dist");
+fn get_output_dir(matches: &ArgMatches) -> PathBuf {
+    let mut output_dir = PathBuf::from("./dist");
     if let Some(path) = matches.value_of("output") {
-        output_dir = Path::new(path);
+        output_dir = PathBuf::from(path);
     }
 
     output_dir
-        .to_str()
-        .unwrap_or_else(|| {
-            println!("Fail to parse path '{}'", output_dir.display());
-            process::exit(1);
-        })
-        .to_string()
 }
 
 /// Get the input file(s) from CLI arg
@@ -95,7 +89,7 @@ fn get_input_paths(matches: &ArgMatches) -> Vec<PathBuf> {
 
 /// Get the stylesheet's URL from CLI arg
 fn get_stylesheet(matches: &ArgMatches) -> String {
-    let mut url = "./style.css";
+    let mut url = "asset/style.css";
     if let Some(value) = matches.value_of("stylesheet") {
         url = value;
     }
