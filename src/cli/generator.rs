@@ -100,9 +100,18 @@ impl Generator {
             process::exit(1);
         });
 
-        let dest_path = Path::new(&self.args.dist_dir())
-            .join(file_path_prefix)
-            .join(format!("{}.html", file.file_stem()));
+        let dest_path_prefix = Path::new(&self.args.dist_dir()).join(file_path_prefix);
+
+        fs::create_dir_all(&dest_path_prefix).unwrap_or_else(|error| {
+            println!(
+                "Fail to create dir(s) for '{}': {}",
+                file_path_prefix.display(),
+                error
+            );
+            process::exit(1);
+        });
+
+        let dest_path = dest_path_prefix.join(format!("{}.html", file.file_stem()));
 
         let mut template = Template::new();
         template.parse(file.content(), &self.args);
