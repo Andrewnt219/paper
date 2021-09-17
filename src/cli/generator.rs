@@ -55,12 +55,19 @@ impl Generator {
 
     /// Recursively generate dist files from a path
     fn generate_dist_from_path(&self, path: &PathBuf) {
+        if !path.exists() {
+            println!("Path '{}' does not exist", path.display());
+            process::exit(0);
+        }
+
         if path.is_dir() {
             self.generate_dist_from_dir(&path);
+            return;
         }
 
         if path.is_file() {
             self.generate_dist_from_file(&path);
+            return;
         }
 
         println!("Path is not regconize as file or dir. Try removing trailing slash");
