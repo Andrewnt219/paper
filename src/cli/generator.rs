@@ -62,6 +62,9 @@ impl Generator {
         if path.is_file() {
             self.generate_dist_from_file(&path);
         }
+
+        println!("Path is not regconize as file or dir. Try removing trailing slash");
+        process::exit(0);
     }
 
     /// Recursively gEnerate dist file from a dir path
@@ -100,9 +103,18 @@ impl Generator {
             process::exit(1);
         });
 
-        let dest_path = Path::new(&self.args.dist_dir())
-            .join(file_path_prefix)
-            .join(format!("{}.html", file.file_stem()));
+        let dest_path_prefix = Path::new(&self.args.dist_dir()).join(file_path_prefix);
+
+        fs::create_dir_all(&dest_path_prefix).unwrap_or_else(|error| {
+            println!(
+                "Fail to create dir(s) for '{}': {}",
+                file_path_prefix.display(),
+                error
+            );
+            process::exit(1);
+        });
+
+        let dest_path = dest_path_prefix.join(format!("{}.html", file.file_stem()));
 
         let mut template = Template::new();
         template.parse(file.content(), &self.args);
