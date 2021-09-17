@@ -1,5 +1,5 @@
 use std::{
-    fs::{self, File},
+    fs::{self, remove_dir_all, File},
     io::Write,
     path::{Path, PathBuf},
     process,
@@ -30,6 +30,13 @@ impl Generator {
 
     /// Create the dist dir for .html files
     fn create_dist_dir(&self) {
+        if self.args.dist_dir().is_dir() {
+            remove_dir_all(self.args.dist_dir()).unwrap_or_else(|error| {
+                println!("Fail to remove dist dir: {}", error);
+                process::exit(1);
+            })
+        }
+
         fs::create_dir_all(&self.args.dist_dir()).unwrap_or_else(|error| {
             println!("Failed to create dist: {}", error);
             process::exit(1);
