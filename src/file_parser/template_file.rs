@@ -1,4 +1,8 @@
-use std::{fs::read_to_string, path::Path, process};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    process,
+};
 
 use crate::cli::arg_parser::ArgParser;
 
@@ -34,11 +38,7 @@ pub struct Template {
 impl Template {
     /// Create a template with raw content
     pub fn new() -> Template {
-        let content = read_to_string(Path::new("asset/template.html")).unwrap_or_else(|error| {
-            println!("Fail to read template file: {}", error);
-            process::exit(1);
-        });
-
+        let content = include_str!("./asset/template.html").to_string();
         return Template {
             content,
             state: TemplateState::RAW,
