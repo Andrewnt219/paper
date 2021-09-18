@@ -1,6 +1,8 @@
 # paper-cli
 
-Static site generator (SSG) made with [Rust](https://www.rust-lang.org/)
+Static site generator (SSG) made with [Rust](https://www.rust-lang.org/).
+
+Sample website: [https://paper-sample.vercel.app/](https://paper-sample.vercel.app/)
 
 To start running:
 
