@@ -123,7 +123,7 @@ impl Generator {
         let dest_path = dest_path_prefix.join(format!("{}.html", file.file_stem()));
 
         let mut template = Template::new();
-        template.parse(file.content(), &self.args);
+	template.parse(&file, &self.args);
 
         File::create(&dest_path)
             .and_then(|mut file| file.write_all(template.content().as_bytes()))
