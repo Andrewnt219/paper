@@ -6,6 +6,7 @@ use std::{
 
 use crate::cli::arg_parser::ArgParser;
 use crate::file_parser::source_file::SourceFile;
+use crate::file_parser::markdown_parser::MarkdownDocument;
 
 pub enum TemplateState {
     PARSED,
@@ -115,11 +116,24 @@ impl Template {
     }
 
     fn parse_markdown_text(&mut self, content: &str, args: &ArgParser) {
-	let mut body = String::from("");
+	let mut body = parse_markdown_to_html(content);
 	let mut title = String::from("");
 
-	// TODO: Implement the markdown parser
+	self.set_title(&title);
+	self.set_body(&body);
+	self.set_styleshet(parse_stylesheet_url(args.stylesheet()).as_str());
+	self.state = TemplateState::PARSED;
     }
+}
+
+fn parse_markdown_to_html(content: &str) -> String {
+    let mut doc = MarkdownDocument::new();
+
+    for line in content.lines() {
+	doc.add_line_to_document(&line);
+    }
+
+    doc.print()
 }
 
 /// parse the content to suitable html tags
