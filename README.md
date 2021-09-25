@@ -72,6 +72,10 @@ Title is the first line of the file, followed by 2 empty lines
 
 Specify a different output directory, default is `dist`
 
+#### 🎉 Parse Markdown `#`-like headers from `<h1>` to `<h6>`
+
+Markdown syntax supports HTML headers from `<h1>` to `<h6>` as `#` all the way to `######`, respectively.
+
 ```bash
 $ cargo run -- -i sample.txt --output pages
 ```
