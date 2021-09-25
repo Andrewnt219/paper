@@ -5,6 +5,8 @@ use std::{
 };
 
 use crate::cli::arg_parser::ArgParser;
+use crate::file_parser::source_file::SourceFile;
+use crate::file_parser::markdown_parser::MarkdownDocument;
 
 pub enum TemplateState {
     PARSED,
@@ -70,8 +72,16 @@ impl Template {
         self.content.as_str()
     }
 
+    pub fn parse(&mut self, source_file: &SourceFile, args: &ArgParser) {
+	if source_file.ext() == "txt" {
+	    self.parse_raw_text(source_file.content(), args);
+	} else if source_file.ext() == "md" {
+	    self.parse_markdown_text(source_file.content(), args);
+	}
+    }
+
     /// Parse the raw content into html content
-    pub fn parse(&mut self, content: &str, args: &ArgParser) {
+    fn parse_raw_text(&mut self, content: &str, args: &ArgParser) {
         let mut body = String::from("");
         let mut title = String::from("");
         let mut blank_line_count = 0;
@@ -104,6 +114,26 @@ impl Template {
         self.set_styleshet(parse_stylesheet_url(args.stylesheet()).as_str());
         self.state = TemplateState::PARSED;
     }
+
+    fn parse_markdown_text(&mut self, content: &str, args: &ArgParser) {
+	let mut body = parse_markdown_to_html(content);
+	let mut title = String::from("");
+
+	self.set_title(&title);
+	self.set_body(&body);
+	self.set_styleshet(parse_stylesheet_url(args.stylesheet()).as_str());
+	self.state = TemplateState::PARSED;
+    }
+}
+
+fn parse_markdown_to_html(content: &str) -> String {
+    let mut doc = MarkdownDocument::new();
+
+    for line in content.lines() {
+	doc.add_line_to_document(&line);
+    }
+
+    doc.print()
 }
 
 /// parse the content to suitable html tags
