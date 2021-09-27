@@ -1,5 +1,7 @@
 # paper-cli
 
+⚠ This project is not actively maintained. See: [https://github.com/Andrewnt219/paper-csharp](https://github.com/Andrewnt219/paper-csharp)
+
 Static site generator (SSG) made with [Rust](https://www.rust-lang.org/).
 
 Sample website: [https://paper-sample.vercel.app/](https://paper-sample.vercel.app/)
