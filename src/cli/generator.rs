@@ -69,7 +69,7 @@ impl Generator {
             return;
         }
 
-        println!("Path is not regconize as file or dir. Try removing trailing slash");
+        println!("Path is not regconized as file or dir. Try removing trailing slash");
         process::exit(0);
     }
 
