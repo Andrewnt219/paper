@@ -5,6 +5,7 @@ use std::{
 
 use clap::{App, Arg, ArgMatches};
 
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 /// Represent the parsed arguments from CLI
 pub struct ArgParser {
     dist_dir: PathBuf,
@@ -16,7 +17,7 @@ impl ArgParser {
     /// Create a new `ArgParser` with parsed CLI arguments
     pub fn new() -> ArgParser {
         let matches = App::new("Paper")
-            .version("0.1")
+            .version(VERSION)
             .author("Andrew N. <hey@andrewnt.dev>")
             .about("Generate static site")
             .arg(
